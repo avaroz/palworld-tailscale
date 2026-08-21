@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Script de entrada para Tailscale + Palworld
+# Script wrapper para iniciar Tailscale + Palworld
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
