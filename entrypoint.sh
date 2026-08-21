@@ -13,6 +13,6 @@ else
 fi
 
 echo "Starting Palworld server..."
-# Ejecutar el entrypoint original de Palworld
-exec /init
+# Ejecutar el servidor Palworld directamente
+/home/steam/steamcmd/steamapps/common/PalServer/PalServer.sh
 
