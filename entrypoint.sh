@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 echo "Starting Tailscale daemon..."
 tailscaled --tun=userspace-networking > /tmp/tailscale.log 2>&1 &
@@ -13,6 +14,6 @@ else
 fi
 
 echo "Starting Palworld server..."
-# Ejecutar el entrypoint original de la imagen base
-exec /bin/bash /home/steam/entrypoint.sh
+# La imagen base usa /init como entrypoint, así que ejecutamos eso
+exec /init "$@"
 
