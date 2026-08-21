@@ -4,9 +4,8 @@ FROM thijsvanloef/palworld-server-docker:latest
 RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
-    && mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.gpg | tee /etc/apt/keyrings/tailscale-archive-keyring.gpg > /dev/null \
-    && curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.list | tee /etc/apt/sources.list.d/tailscale.list \
+    && curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.gpg > /usr/share/keyrings/tailscale-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] https://pkgs.tailscale.com/stable/ubuntu focal main" | tee /etc/apt/sources.list.d/tailscale.list \
     && apt-get update \
     && apt-get install -y tailscale \
     && apt-get clean \
