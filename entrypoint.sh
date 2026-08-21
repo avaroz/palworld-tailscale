@@ -1,9 +1,7 @@
 #!/bin/bash
-set -e
 
 echo "Starting Tailscale daemon..."
 tailscaled --tun=userspace-networking > /tmp/tailscale.log 2>&1 &
-TAILSCALE_PID=$!
 sleep 3
 
 if [ -n "$TAILSCALE_AUTHKEY" ]; then
@@ -11,12 +9,10 @@ if [ -n "$TAILSCALE_AUTHKEY" ]; then
   tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname=palworld-server --accept-dns=false
   echo "Tailscale connected successfully"
 else
-  echo "Warning: TAILSCALE_AUTHKEY not set. Tailscale will not connect."
+  echo "Warning: TAILSCALE_AUTHKEY not set"
 fi
 
-echo "All services started. Keeping container alive..."
-# Mantener el contenedor vivo
-while true; do
-  sleep 10
-done
+echo "Starting Palworld server..."
+# Ejecutar el entrypoint original de Palworld
+exec /init
 
