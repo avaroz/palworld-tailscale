@@ -15,5 +15,6 @@ else
 fi
 
 echo "Starting Palworld server..."
-exec /init
+# Ejecutar el comando de inicio estándar de Palworld
+exec bash /home/steam/PalServer/run.sh
 
