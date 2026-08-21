@@ -14,6 +14,6 @@ else
 fi
 
 echo "Starting Palworld server..."
-# La imagen base usa /init como entrypoint, así que ejecutamos eso
-exec /init "$@"
+# The base image entrypoint is /home/steam/server/init.sh
+exec /home/steam/server/init.sh "$@"
 
