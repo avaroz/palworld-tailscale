@@ -2,14 +2,15 @@
 
 A containerized Palworld dedicated server with Tailscale VPN support, ready to deploy on Railway or any Docker-compatible platform.
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Option 1: Deploy on Railway (Recommended)
 
 1. Click the Railway deploy button or connect your GitHub fork
 2. Railway will automatically set up the environment variables from `.env.production`
 3. Configure the Palworld settings in Railway's dashboard under Variables
-4. Deploy and enjoy!
+4. Add your Tailscale Auth Key (see [Tailscale Setup](#tailscale-setup))
+5. Deploy and enjoy!
 
 ### Option 2: Local Development
 
@@ -24,7 +25,7 @@ A containerized Palworld dedicated server with Tailscale VPN support, ready to d
    cp .env.example .env
    ```
 
-3. Edit `.env` with your desired configuration (see Configuration section below)
+3. Edit `.env` with your desired configuration (see [Configuration](#configuration) section below)
 
 4. Build and run with Docker:
    ```bash
@@ -36,12 +37,13 @@ A containerized Palworld dedicated server with Tailscale VPN support, ready to d
      palworld-server
    ```
 
-## Configuration
+## ⚙️ Configuration
 
-All server settings are controlled via environment variables. Two configuration files are provided:
+All server settings are controlled via environment variables. Three configuration files are provided:
 
 - **`.env.example`** - Complete reference with all available options and descriptions
 - **`.env.production`** - Production-ready configuration
+- **`TAILSCALE_SETUP.md`** - Detailed Tailscale VPN setup guide
 
 ### Key Variables
 
@@ -77,69 +79,119 @@ All server settings are controlled via environment variables. Two configuration 
 - `PALWORLD_CLAN_PLAYER_MAX_NUM` - Max players per clan
 - `PALWORLD_WORK_SPEED_PAL` - Pal work speed multiplier
 
-### Tailscale Configuration
+## 🔐 Tailscale Setup
 
-If you want to connect this server via Tailscale VPN:
+### What is Tailscale?
 
-1. Create a Tailscale auth key at https://login.tailscale.com/admin/settings/keys
-2. Set the `TAILSCALE_AUTHKEY` environment variable
-3. The server will automatically join your Tailscale network
+Tailscale creates a secure private VPN network between your devices. Connect your Palworld server to Tailscale to:
+- ✅ Access your server from anywhere
+- ✅ Bypass firewall restrictions
+- ✅ Play securely without exposing your server publicly
+- ✅ Use private Tailscale IPs (100.x.x.x)
 
-## Docker Image
+### Quick Setup
+
+1. **Generate Tailscale Auth Key:**
+   - Go to https://login.tailscale.com/admin/settings/keys
+   - Click "Generate auth key"
+   - Make it **Reusable** ✓ and optionally **Ephemeral** ✓
+   - Copy the key (looks like: `tskey-auth-XXXXX`)
+
+2. **Add to Railway:**
+   - Go to your `palworld-tailscale` service in Railway
+   - Go to **Variables** section
+   - Add new variable:
+     - Name: `TAILSCALE_AUTHKEY`
+     - Value: Paste your auth key
+   - Railway auto-redeploys
+
+3. **Verify Connection:**
+   - Go to https://login.tailscale.com/admin/machines
+   - Look for device named **"palworld-server"**
+   - Once online, Tailscale is working!
+
+4. **Connect to Server:**
+   - Find your server's Tailscale IP (100.x.x.x)
+   - In Palworld: `100.x.x.x:8211` with your password
+   - Play securely over VPN!
+
+**📖 Full Guide:** See [TAILSCALE_SETUP.md](TAILSCALE_SETUP.md) for detailed troubleshooting and advanced configuration.
+
+## 🐳 Docker Image
 
 This image is based on `thijsvanloef/palworld-server-docker:latest` and adds:
-- Tailscale VPN support
+- Tailscale VPN support with automatic auth key handling
 - Pre-configured environment variable handling
 - Railway deployment compatibility
+- Entrypoint script for seamless startup
 
-## Ports
+## 🔌 Ports
 
 Expose these UDP ports:
 - `8211` - Game server port
-- `27015` - Query/discovery port
+- `27015` - Query/discovery port (server list)
 
-## File Structure
+## 📁 File Structure
 
 ```
 .
-├── Dockerfile          - Container definition with Tailscale
-├── entrypoint.sh       - Startup script (Tailscale + Palworld)
-├── .env.example        - Configuration template (all options)
-├── .env.production     - Production configuration
-└── README.md           - This file
+├── Dockerfile           - Container definition with Tailscale
+├── entrypoint.sh        - Startup script (Tailscale + Palworld)
+├── .env.example         - Configuration template (all 28 options)
+├── .env.production      - Production configuration
+├── README.md            - This file
+└── TAILSCALE_SETUP.md   - Detailed VPN setup guide
 ```
 
-## Railway Deployment
+## 🚀 Railway Deployment
 
 When deploying on Railway:
 
-1. The platform will automatically read the variables
-2. Expose ports 8211 and 27015 as UDP
-3. All configuration happens through Railway's Variables section
-4. Changes take effect after redeploy
+1. The platform automatically reads all variables from `.env.production`
+2. Configure via Railway's **Variables** dashboard
+3. Expose ports 8211 and 27015 as UDP
+4. Add `TAILSCALE_AUTHKEY` for VPN support (see [Tailscale Setup](#tailscale-setup))
+5. Changes take effect after redeploy
 
-## Troubleshooting
+## 🐛 Troubleshooting
 
-### Server not appearing in server list?
+### Server not appearing in Tailscale machines?
+- Verify `TAILSCALE_AUTHKEY` is set correctly
+- Check Railway deployment logs
+- Look for: "Tailscale connected successfully"
+- See [TAILSCALE_SETUP.md](TAILSCALE_SETUP.md) for more help
+
+### Server not appearing in Palworld server list?
 - Check `PALWORLD_QUERY_PORT` (default 27015)
 - Verify UDP ports are properly exposed
-- Check Tailscale connection if using VPN
+- Ensure server status is "Online" in Railway
 
 ### Connection refused?
 - Verify ports 8211 and 27015 are open
-- Check server logs for startup errors
+- Check service logs for startup errors
 - Ensure sufficient memory allocation
+- Try direct connection if Tailscale fails
 
 ### Performance issues?
 - Reduce `PALWORLD_PAL_SPAWN_NUM_RATE`
 - Lower `PALWORLD_DROP_ITEM_MAX_NUM`
-- Check CPU/memory allocation
+- Check Railway CPU/memory allocation
 
-## License
+## 📚 Documentation
+
+- **Palworld Server Config:** See `.env.example` for all options
+- **Tailscale VPN:** See `TAILSCALE_SETUP.md` for detailed guide
+- **Base Image:** https://github.com/thijsvanloef/palworld-server-docker
+- **Tailscale Docs:** https://tailscale.com/kb/
+
+## 📝 License
 
 Based on [thijsvanloef/palworld-server-docker](https://github.com/thijsvanloef/palworld-server-docker)
 
-## Support
+## 💬 Support
 
-For issues, create a GitHub issue or check the Palworld server documentation.
+For issues:
+- Check [TAILSCALE_SETUP.md](TAILSCALE_SETUP.md) for Tailscale problems
+- Create a GitHub issue for Palworld server issues
+- Check Railway logs for deployment errors
 
