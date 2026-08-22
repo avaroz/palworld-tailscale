@@ -15,14 +15,14 @@ fi
 
 echo "Starting Palworld server..."
 
-# Ensure PALWORLD_ADMIN_PASSWORD is set (required for REST API)
-if [ -z "$PALWORLD_ADMIN_PASSWORD" ]; then
-  echo "ERROR: PALWORLD_ADMIN_PASSWORD must be set"
+# Ensure ADMIN_PASSWORD is set (required for REST API)
+if [ -z "$ADMIN_PASSWORD" ]; then
+  echo "ERROR: ADMIN_PASSWORD must be set"
   exit 1
 fi
 
-# Export all PALWORLD_* variables so they're available to the base image
-export PALWORLD_ADMIN_PASSWORD
+# Export all Palworld variables so they're available to the base image
+export ADMIN_PASSWORD
 
 echo "Admin password is configured"
 
